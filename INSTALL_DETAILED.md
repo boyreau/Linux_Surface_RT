@@ -82,6 +82,10 @@ Spam enter to use the default if you don't want to bother reading.
 
 You can then use the [build.sh](./build.sh) script at the root of the repository.
 
+```bash
+cd ~/linux
+build.sh
+```
 
 ### Get your userspace
 
@@ -231,7 +235,12 @@ You should have a working boot partition.
 ### Userspace partition
 
 This one should be pretty easy, you just need to copy everything in the downloaded userspace to `/mnt/linux-userspace`.
+You also have to copy the kernel modules in your userspace.
 
+```bash
+cp <your userspace> /mnt/linux-userspace
+cp -r ~/linux/output/lib /mnt/linux-userspace/lib
+```
 ---
 
 Now that your partitions are set up, the final step is to umount/close everything and to copy your .img on your USB stick.
