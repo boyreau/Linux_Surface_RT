@@ -1,0 +1,9 @@
+fs0:
+# TODO PATHES USE BACKSLASH
+
+mv startup.nsh startup.nsh.risky
+mv startup.nsh.bak startup.nsh
+
+linux-6.14.1+\vmlinuz-6.14.1+ initrd=linux-6.14.1+\initramfs-6.14.1+.img dtb=linux-6.14.1+\tegra30-microsoft-surface-rt-efi.dtb ignore_loglevel earlyprintk earlycon root=PARTUUID=abcd1234-04 rw rootwait console=tty0 cpuidle.off=1
+
+reset -s
