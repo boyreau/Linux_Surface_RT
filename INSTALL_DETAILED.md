@@ -69,12 +69,19 @@ The correct file are `arch/arm/configs/openrt_defconfig` or `arch/arm/configs/gr
 (note: this configuration did not work with my last test, here's [mine](./.config)).
 
 
-The final step is to merge both configuration files using the following |TODO merge script| rule :
+The final step is to merge both configuration files using the following rule :
  - everything enabled in any of the configuration file should be kept 
  - everything enabled as built-in in one file should be kept built-in in the final file
  - no option should be duplicated
 
-Name the final file `.config` and put it at the root of the previously cloned repository.
+You can use this [script](./config_merge.sh).
+
+```bash
+./config_merge .config.surface_rt .config.distribution .config
+```
+The first argument is the default configuration, the second argument is the configuration file of your distribution and the third configuration is the merged configuration file.
+
+Name the merged configuration file `.config` and put it at the root of the previously cloned linux repository.
 
 You should run `make olddefconfig` to ensure your kernel configuration is valid, and to update it.
 If newer options are available, you will be prompted about them.
