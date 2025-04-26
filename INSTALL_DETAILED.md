@@ -46,6 +46,9 @@ This means Ubuntu default kernel configuration should be good enough to run most
 
 ### Build your kernel
 
+I recommend building the kernel directly on the Surface RT (on the prebuilt Raspberry Pi OS image or equivalent).
+You don't need to set-up cross-compilation and it will help you building a working .config file for the kernel.
+
 #### The kernel sources
 First thing first, you need the kernel sources (cloning may take a while, keep reading while it clones).
 
