@@ -51,9 +51,12 @@ First thing first, you need the kernel sources (cloning may take a while, keep r
 
 ```bash
 # Remove `--depth 1 --single-branch` if you want the full history - it's gonna take a lot of time and disk space
-git clone --depth 1 --single-branch https://gitlab.com/clamor-s/linux ~/linux
+git clone --depth 1 --single-branch --branch master https://gitlab.com/clamor-s/linux ~/linux
 cd ~/linux
 ```
+
+This repository is maintained by Clamor (https://gitlab.com/clamor-s/linux).
+I use the master branch for my builds.
 
 #### The kernel configuration file
 Then, you need a valid kernel configuration file. It should contain your distribution configuration options AND Surface RT configurations options.
@@ -65,8 +68,11 @@ If you're lucky, and running a Linux distribution right now, you can use `zcat /
 Then, you need to merge this configuration file with surface RT default working configuration.
 You can find this configuration file here : https://gitlab.com/clamor-s/linux/.
 
-The correct file are `arch/arm/configs/openrt_defconfig` or `arch/arm/configs/grate_defconfig`
-(note: this configuration did not work with my last test, here's [mine](./.config)).
+The correct file is `arch/arm/configs/grate_defconfig`
+
+Note: this configuration did not work with my last test, here's [mine](./.config)
+
+This config is a merge of grate\_defconfig and the config of the preinstalled Linux image found [here](https://openrt.gitbook.io/open-surfacert/surface-rt/linux/kernel/prebuilt-binaries) (zcat /proc/config.gz).
 
 
 The final step is to merge both configuration files using the following rule :
