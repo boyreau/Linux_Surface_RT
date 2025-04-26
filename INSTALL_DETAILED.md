@@ -47,10 +47,11 @@ This means Ubuntu default kernel configuration should be good enough to run most
 ### Build your kernel
 
 I recommend building the kernel directly on the Surface RT (on the prebuilt Raspberry Pi OS image or equivalent).
-You don't need to set-up cross-compilation and it will help you building a working .config file for the kernel.
+You don't need to set-up cross-compilation and it will help you building a functional config file for the kernel.
 
 #### The kernel sources
-First thing first, you need the kernel sources (cloning may take a while, keep reading while it clones).
+
+First thing first, you need the kernel sources (cloning may take a while, keep reading).
 
 ```bash
 # Remove `--depth 1 --single-branch` if you want the full history - it's gonna take a lot of time and disk space
@@ -62,20 +63,20 @@ This repository is maintained by Clamor (https://gitlab.com/clamor-s/linux).
 I use the master branch for my builds.
 
 #### The kernel configuration file
+
 Then, you need a valid kernel configuration file. It should contain your distribution configuration options AND Surface RT configurations options.
 
-You have to find your favorite distro's kernel config by googling something like "Ubuntu default kernel config" or "archlinux default kernel config".
+You have to find your favorite distro's kernel config. You may be able to find it in your distro's official repositories (look for a package named Linux).
 
 If you're lucky, and running a Linux distribution right now, you can use `zcat /proc/config.gz` or `cat /boot/config$(uname -r)` to obtain your current configuration.
 
 Then, you need to merge this configuration file with surface RT default working configuration.
-You can find this configuration file here : https://gitlab.com/clamor-s/linux/.
+You can find this configuration file [here](https://gitlab.com/clamor-s/linux/), in `arch/arm/configs/grate_defconfig`.
 
-The correct file is `arch/arm/configs/grate_defconfig`
+Note: this configuration did not work with my latest test, here's [mine](./.config)
 
-Note: this configuration did not work with my last test, here's [mine](./.config)
 
-This config is a merge of grate\_defconfig and the config of the preinstalled Linux image found [here](https://openrt.gitbook.io/open-surfacert/surface-rt/linux/kernel/prebuilt-binaries) (zcat /proc/config.gz).
+This config is a merge of grate\_defconfig and of [this Surface RT linux installation](https://openrt.gitbook.io/open-surfacert/surface-rt/linux/kernel/prebuilt-binaries) (obtained through `zcat /proc/config.gz`).
 
 
 The final step is to merge both configuration files using the following rule :
@@ -88,13 +89,9 @@ You can use this [script](./config_merge.sh).
 ```bash
 ./config_merge .config.surface_rt .config.distribution .config
 ```
-The first argument is the default configuration, the second argument is the configuration file of your distribution and the third configuration is the merged configuration file.
+The first argument is the default configuration, the second argument is the configuration file of your distribution and the third argument is the name of the merged configuration file (defaults to .config).
 
 Name the merged configuration file `.config` and put it at the root of the previously cloned linux repository.
-
-You should run `make olddefconfig` to ensure your kernel configuration is valid, and to update it.
-If newer options are available, you will be prompted about them.
-Spam enter to use the default if you don't want to bother reading.
 
 You can then use the [build.sh](./build.sh) script at the root of the repository.
 
