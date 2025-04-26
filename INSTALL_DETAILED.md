@@ -95,6 +95,14 @@ Name the merged configuration file `.config` and put it at the root of the previ
 
 You can then use the [build.sh](./build.sh) script at the root of the repository.
 
+You WILL need a [cross-compiler](https://stackoverflow.com/questions/897289/what-is-cross-compilation) for arm32 CPUs if you are not on your Surface RT.
+
+I used [ARM prebuilt GNU/Linux armv7l-none-linux-gnueabihf for x86\_64 hosts cross-compiler](https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-linux-gnueabihf.tar.xz).
+
+I had to remove the non-prefixed soft-link from the bin directory (x-tools/armv7l-unknown-linux-gnueabihf/bin/gcc...), and to add `DOWNLOAD_DIR/x-tools/armv7l-unknown-linux-gnueabihf/bin` in my PATH.
+
+I also changed the CROSS\_COMPILE argument in build.sh to match the prefix (armv7l-unknown-linux-gnueabihf-) of the tools I just downloaded, instead of the generic arm-linux-gnueabihf- prefix.
+
 ```bash
 cd ~/linux
 build.sh
