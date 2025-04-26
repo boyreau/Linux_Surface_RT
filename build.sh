@@ -2,21 +2,25 @@
 
 # Useful variables
 VERSION=$(make -s kernelrelease)
-EFI_DIR=./output/boot/
-BOOT_DIR=$EFI_DIR/linux-$VERSION
+
+# Built files
 LINUX=vmlinuz-$VERSION
-INITRAMFS=initramfs-$VERSION.img
 DTB=tegra30-microsoft-surface-rt-efi.dtb
-MAXPROC=4
+INITRAMFS=initramfs-$VERSION.img
 
-# if [ -z "$(which nproc 2>/dev/null)" ]
-# then
-#     MAXPROC=8
-# else
-#     MAXPROC=`nproc`
-# fi
+# Relative and absolute boot partition pathes
+BUILD_DIR=./output/boot
+EFI_DIR=linux-$VERSION
+LINUX_DIR=$BUILD_DIR/$EFI_DIR
 
-echo $VERSION $EFI_DIR $BOOT_DIR $LINUX $INITRAMFS $DTB $MAXPROC
+if [ -z "$(which nproc 2>/dev/null)" ]
+then
+    MAXPROC=8
+else
+	MAXPROC=$(nproc)
+fi
+
+make ARCH=arm olddefconfig
 
 echo "Recreating output"
 rm -rf output
@@ -29,8 +33,8 @@ echo "Building kernel"
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j $MAXPROC || exit 1
 
 echo "Copying kernel to ./output"
-cp arch/arm/boot/zImage ./output/$LINUX
-cp arch/arm/boot/dts/nvidia/$DTB ./output/$DTB
+cp -v arch/arm/boot/zImage ./output/$LINUX
+cp -v arch/arm/boot/dts/nvidia/$DTB ./output/$DTB
 
 # Install modules. mkinitcpio creates soft link to /lib.
 # This leads to no modules embedded in the image
@@ -47,16 +51,27 @@ make ARCH=arm INSTALL_MOD_PATH=./output modules_install
 # mkinitcpio -k $VERSION -g ./output/$INITRAMFS
 
 echo "Installing Linux and initramfs to boot directory"
-rm  -rf $BOOT_DIR
-mkdir -p $BOOT_DIR
+rm  -rf $LINUX_DIR
+mkdir -p $LINUX_DIR
 
-cp -v ./output/$LINUX        $BOOT_DIR/$LINUX
-cp -v ./output/$DTB          $BOOT_DIR/$DTB
-cp -v ./output/$INITRAMFS    $BOOT_DIR/$INITRAMFS
+cp -v ./output/$LINUX        $LINUX_DIR/$LINUX
+cp -v ./output/$DTB          $LINUX_DIR/$DTB
+if [ -f ./output/$INITRAMFS ]
+then
+	cp -v ./output/$INITRAMFS    $LINUX_DIR/$INITRAMFS
+fi
 
 echo "Creating startup.nsh"
-echo 'fs0:' > $EFI_DIR/startup.nsh
-echo "$EFI_DIR\\$LINUX initrd=$EFI_DIR\\$INITRAMFS dtb=$EFI_DIR\\$DTB ignore_loglevel earlyprintk earlycon root=PARTUUID=abcd1234-04 rw rootwait console=tty0 cpuidle.off=1" >> $EFI_DIR/startup.nsh
-echo 'reset -s' >> $EFI_DIR/startup.nsh
+echo 'fs0:' > $BUILD_DIR/startup.nsh
+echo -n "$EFI_DIR\\$LINUX " >> $BUILD_DIR/startup.nsh
 
-echo "All done ! Copy $BOOT_DIR to your boot partition or use its content to update your existing startup script."
+if [ -f ./output/$INITRAMFS ]
+then
+	echo -n "initrd=$EFI_DIR\\$INITRAMFS " >> $BUILD_DIR/startup.nsh
+fi
+
+echo "dtb=$EFI_DIR\\$DTB ignore_loglevel earlyprintk earlycon root=PARTUUID=abcd1234-04 rw rootwait console=tty0 cpuidle.off=1" >> $BUILD_DIR/startup.nsh
+
+echo 'reset -s' >> $BUILD_DIR/startup.nsh
+
+echo "All done ! Copy $BUILD_DIR/$EFI_DIR content to your boot partition or use its content to update your existing startup script."
