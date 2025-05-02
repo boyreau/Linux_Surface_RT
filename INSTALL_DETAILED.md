@@ -238,13 +238,13 @@ Now that you have a valid and accessible image disk, you need to provide some ba
 You can find a prebuilt boot partition file [here](./boot.tar.gz). You will need to add your kernel, config and dtb into it.
 
 ```bash
+sudo blkid
 cd ~/linux
 export LINUX_DIR=/mnt/linux-boot/linux-$(make -s kernelrelease)
 tar --extract --file ./boot.tar.gz --directory /mnt/linux-boot/
 mkdir -p $LINUX_DIR
-cp ~/linux/output/startup.nsh /mnt/linux-boot/startup.nsh
-cp ~/linux/output/vmlinuz-*  $LINUX_DIR/
-cp ~/linux/output/tegra30-*  $LINUX_DIR/
+cp ~/linux/output/boot/startup.nsh /mnt/linux-boot/startup.nsh
+cp -r ~/linux/output/boot/linux-$(make -s kernelrelease)  $LINUX_DIR/
 cp ~/linux/.config           $LINUX_DIR/
 unset LINUX_DIR
 export ROOT_UUID=$(blkid | grep loop0p2 | cut -d'=' -f5 | tr -d '"')
