@@ -30,7 +30,7 @@ mkdir -p output
 # If this step fail, check that the CROSS-COMPILE option matches your compiler binary name - mine would be armv7l-unknown-linux-gnueabihf- ; yours is probably different
 # This compiler should also be in your PATH. Careful, `which gcc` should give your original compiler (not a soft-link to the cross-compiler), and `which arm-linux-gnueabihf-gcc` should give your cross-compiler.
 echo "Building kernel"
-make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j $MAXPROC || exit 1
+make ARCH=arm CROSS_COMPILE=armv7l-unknown-linux-gnueabihf- -j $MAXPROC || exit 1
 
 echo "Copying kernel to ./output"
 cp -v arch/arm/boot/zImage ./output/$LINUX

@@ -71,15 +71,18 @@ You have to find your favorite distro's kernel config. You may be able to find i
 If you're lucky, and running a Linux distribution right now, you can use `zcat /proc/config.gz` or `cat /boot/config$(uname -r)` to obtain your current configuration.
 
 Then, you need to merge this configuration file with surface RT default working configuration.
-You can find this configuration file [here](https://gitlab.com/clamor-s/linux/), in `arch/arm/configs/grate_defconfig`.
+You can find this configuration file [here](https://gitlab.com/grate-driver/linux/), in `arch/arm/configs/grate_defconfig`.
 
-Note: this configuration did not work with my latest test, here's [mine](./.config)
+Note: Configuation are a critical part. Start with a working configuration and update it option by option to ensure it works, and to easily rollback when something stops working.
+Here's [my working config](./.config)
 
 
 This config is a merge of grate\_defconfig and of [this Surface RT linux installation](https://openrt.gitbook.io/open-surfacert/surface-rt/linux/kernel/prebuilt-binaries) (obtained through `zcat /proc/config.gz`).
 
 
-The final step is to merge both configuration files using the following rule :
+WARNING : the following step may not work and bugs are hard to track, start with a working config and enable options one at a time if you want to debug properly
+
+The final step is to merge both configuration files using the following rule: 
  - everything enabled in any of the configuration file should be kept 
  - everything enabled as built-in in one file should be kept built-in in the final file
  - no option should be duplicated
